@@ -21,76 +21,76 @@ namespace CustomerService.Controllers
             custbizManager = custbizmanager;
         }
 
-        [HttpGet]                                                                   //GET:api/customer
+        [HttpGet]                                                                   
         public IActionResult GetAllCustomer() 
         {
             var response = custbizManager.GetAll();
             if(response == null)                                                    
             {
-                return base.NotFound();                                                   //404      
+                return base.NotFound();                                               
             }
-            return base.Ok(response);                                                    //200 - OK  
+            return base.Ok(response);                                                  
         }
 
-        [HttpPost]                                                                  //POST:api/customer
+        [HttpPost]                                                                  
         public IActionResult AddCustomer([FromBody] Customer customer)
         {
             if (string.IsNullOrWhiteSpace(customer.FirstName) || string.IsNullOrWhiteSpace(customer.LastName) || string.IsNullOrWhiteSpace(customer.DOB))
             {
-                return UnprocessableEntity("All the details are required");          //422 - UnprocessableEntity
+                return UnprocessableEntity("All the details are required");          
             }
             custbizManager.Add(customer);
-            return CreatedAtRoute("GetCustomerByID", new { id = customer.Id }, customer);     //Attaching ID to new customer
+            return CreatedAtRoute("GetCustomerByID", new { id = customer.Id }, customer);     
         }
 
-        [HttpGet("{id}",Name = "GetCustomerByID")]                                   //GET:api/customer/1234567
+        [HttpGet("{id}",Name = "GetCustomerByID")]                                   
         public IActionResult GetCustomerByID(string id)
         {
             if(string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest("Invalid customer ID.");                          // 400 - BAD REQUEST
+                return BadRequest("Invalid customer ID.");                         
             }
 
             var response = custbizManager.GetByID(id);
             if(response == null)
             {
-                return base.NotFound();                                                  // 404 - NOT FOUND
+                return base.NotFound();                                                  
             }
-            return base.Ok(response);                                                    //200 - OK
+            return base.Ok(response);                                                    
         }
 
-        [HttpPut("{id}")]                                                           //PUT:api/customer/1234567
+        [HttpPut("{id}")]                                                           
         public IActionResult UpdateCustomerByID(string id, [FromBody] Customer customer)
         {
             if(string.IsNullOrWhiteSpace(id) || id != customer.Id || string.IsNullOrWhiteSpace(customer.FirstName) || string.IsNullOrWhiteSpace(customer.LastName) || string.IsNullOrWhiteSpace(customer.DOB))
             {
-                return base.BadRequest();                                                //400 - BAD REQUEST
+                return base.BadRequest();                                                
             }
 
             var customerById = custbizManager.GetByID(id);
             if(customerById == null)
             {
-                return base.NotFound();                                                  //404 - NOT FOUND
+                return base.NotFound();                                                
             }
             custbizManager.UpdateByID(id, customer);
-            return new NoContentResult();                                           //204 - NO CONTENT
+            return new NoContentResult();                                        
         }
 
-        [Authorize(Policy = Policies.Admin)]                                        //Role based opertion 
-        [HttpDelete("{id}")]                                                        //DELETE:api/customer/123456
+        [Authorize(Policy = Policies.Admin)]                                        
+        [HttpDelete("{id}")]                                                        
         public IActionResult DeleteCustomerByID(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                return base.BadRequest();                                                //400 - BAD REQUEST
+                return base.BadRequest();                                                
             }
 
             var response = custbizManager.DeleteByID(id);
             if(!response)
             {
-                return base.NotFound();                                                  //404 - NOT FOUND
+                return base.NotFound();                                                  
             }
-            return base.NoContent();                                                     //204 - NO CONTENT
+            return base.NoContent();                                                     
         }
     }
 }

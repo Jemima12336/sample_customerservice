@@ -72,17 +72,7 @@ namespace CustomerServiceTests
          httpresponse.RouteName.Should().Be("GetCustomerByID");
 
         }
-     /* [Test]
-        public void ShouldReturnBadRequest_When_GetCustomerByID_With_EmptyID()
-        {
-            var response = _customercontroller.GetCustomerByID("");
-
-            response.Should().NotBeNull();
-            response.Should().BeOfType<BadRequestObjectResult>();
-            ((BadRequestObjectResult)response).StatusCode.Should().Be(Convert.ToInt32(HttpStatusCode.BadRequest));
-            ((BadRequestObjectResult)response).Value.Should().Be("Invalid customer ID.");
-        }
-     */
+    
         [Test]
         public void ShouldReturnNotFound_When_GetCustomerByID_With_InvalidID()
         {
