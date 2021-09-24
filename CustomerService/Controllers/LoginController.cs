@@ -21,9 +21,9 @@ namespace CustomerService.Controllers
         : ControllerBase
     {
         private readonly IConfiguration configReader;
-       // private const int TimeLimitInMin = 10;                                      //Additional
+                                       
 
-        private readonly IList<Credential> _appUsers = new List<Credential>         //Athenticated Users
+        private readonly IList<Credential> _appUsers = new List<Credential>        
         {
            new Credential{FullName = "Admin User", UserName = "admin", Password = "1234", UserRole = "Admin"},
            new Credential{FullName = "Test User", UserName = "user", Password = "1234", UserRole = "User"},
@@ -39,19 +39,19 @@ namespace CustomerService.Controllers
         [AllowAnonymous]
         public IActionResult Login([FromBody] [FromHeader] Credential credential)
         {
-            IActionResult unauthorizedresponse = Unauthorized();                            //Default response
+            IActionResult unauthorizedresponse = Unauthorized();                          
 
-            var user = this.GetMatchingUserFromRepo(credential);                            //Authenticaticating User
+            var user = this.GetMatchingUserFromRepo(credential);                           
 
-            if (user != null)                                                   //Authentication successful
+            if (user != null)                                                   
             {
-                var tokenString = GenerateJWTToken(user);                       //Generate JWT
+                var tokenString = GenerateJWTToken(user);                     
 
                 unauthorizedresponse = base.Ok(new {
                     token = tokenString, 
                     user.UserRole,
                     user.FullName
-                });       //Changes & 200 OK response
+                });       
             }
             return unauthorizedresponse;
         }
@@ -67,7 +67,7 @@ namespace CustomerService.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configReader["Jwt:SecretKey"]));
             var SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var Claims = new[]                                                      //set the claims and role
+            var Claims = new[]                                                     
             {
                 new Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, credential.UserName),
                 new Claim("fullName", credential.FullName),
@@ -79,7 +79,7 @@ namespace CustomerService.Controllers
                 issuer: configReader["Jwt:Issuer"],
                 audience: configReader["Jwt:Audience"],
                 claims: Claims,
-                expires: DateTime.Now.AddMinutes(30),                  //Changes
+                expires: DateTime.Now.AddMinutes(30),                 
                 signingCredentials: SigningCredentials
             );
 
